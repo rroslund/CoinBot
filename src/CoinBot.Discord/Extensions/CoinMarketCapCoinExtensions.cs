@@ -72,7 +72,7 @@ namespace CoinBot.Discord.Extensions
 		/// <returns></returns>
 		public static string GetPriceSummary(this CoinMarketCapCoin details)
 		{
-			return $"{details.PriceUsd.AsUsdPrice(UsdPricePrecision)}/{details.PriceBtc} BTC";
+			return $"{details.PriceUsd.AsUsdPrice(UsdPricePrecision)}/{details.PriceEth} ETH/{details.PriceBtc} BTC";
 		}
 	}
 }
