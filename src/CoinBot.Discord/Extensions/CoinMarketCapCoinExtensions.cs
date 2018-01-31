@@ -10,11 +10,6 @@ namespace CoinBot.Discord.Extensions
 	public static class CoinMarketCapCoinExtensions
 	{
 		/// <summary>
-		/// The USD precision to use when formatting <see cref="CoinMarketCapCoin"/> prices.
-		/// </summary>
-		private const int UsdPricePrecision = 7;
-
-		/// <summary>
 		/// Get information about the price change from last hour, day and week.
 		/// </summary>
 		/// <param name="details">The <see cref="CoinMarketCapCoin"/>.</param>
@@ -56,10 +51,10 @@ namespace CoinBot.Discord.Extensions
 		/// </summary>
 		/// <param name="details">The <see cref="CoinMarketCapCoin"/>.</param>
 		/// <returns></returns>
-		public static string GetPrice(this CoinMarketCapCoin details)
+		public static string GetPrice(this CoinMarketCapCoin details,DiscordBotPriceSettings settings)
 		{
 			StringBuilder priceStringBuilder = new StringBuilder();
-			priceStringBuilder.AppendLine(details.PriceUsd.AsUsdPrice(UsdPricePrecision));
+			priceStringBuilder.AppendLine(details.PriceUsd.AsUsdPrice(settings.UsdPricePrecision));
 			priceStringBuilder.AppendLine($"{details.PriceBtc} BTC");
 			priceStringBuilder.AppendLine($"{details.PriceEth} ETH");
 			return priceStringBuilder.ToString();
@@ -70,9 +65,9 @@ namespace CoinBot.Discord.Extensions
 		/// </summary>
 		/// <param name="details"></param>
 		/// <returns></returns>
-		public static string GetPriceSummary(this CoinMarketCapCoin details)
+		public static string GetPriceSummary(this CoinMarketCapCoin details,DiscordBotPriceSettings settings)
 		{
-			return $"{details.PriceUsd.AsUsdPrice(UsdPricePrecision)}/{details.PriceEth} ETH/{details.PriceBtc} BTC";
+			return $"{details.PriceUsd.AsUsdPrice(settings.UsdPricePrecision)}/{details.PriceEth} ETH/{details.PriceBtc} BTC";
 		}
 	}
 }

@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using CoinBot.Clients.CoinMarketCap;
 using CoinBot.Core;
+using Microsoft.Extensions.Options;
 
 namespace CoinBot.Discord.Commands
 {
@@ -12,9 +13,11 @@ namespace CoinBot.Discord.Commands
 	{
 		private readonly CurrencyManager _currencyManager;
 		private readonly ILogger _logger;
+		private readonly DiscordBotPriceSettings _settings;
 
-		public PriceCommands(CurrencyManager currencyManager, ILogger logger)
+		public PriceCommands(IOptions<DiscordBotPriceSettings> settings,CurrencyManager currencyManager, ILogger logger)
 		{
+			this._settings=settings.Value;
 			this._currencyManager = currencyManager;
 		    this._logger = logger;
 		}
@@ -31,7 +34,7 @@ namespace CoinBot.Discord.Commands
 					if (currency != null)
 					{
 						CoinMarketCapCoin details = currency.Getdetails<CoinMarketCapCoin>();
-						await this.ReplyAsync($"{currency.Symbol} - ${details.GetPriceSummary()} ({details.GetChangeSummary()})");
+						await this.ReplyAsync($"{currency.Symbol} - {details.GetPriceSummary(this._settings)} ({details.GetChangeSummary()})");
 					}
 					else
 					{

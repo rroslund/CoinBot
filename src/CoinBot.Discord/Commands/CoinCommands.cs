@@ -9,16 +9,19 @@ using CoinBot.Clients.CoinMarketCap;
 using CoinBot.Core;
 using CoinBot.Core.Extensions;
 using CoinBot.Discord.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace CoinBot.Discord.Commands
 {
 	public class CoinCommands : CommandBase
 	{
+		private readonly DiscordBotPriceSettings _settings;
 		private readonly CurrencyManager _currencyManager;
 		private readonly ILogger _logger;
 
-		public CoinCommands(CurrencyManager currencyManager, ILogger logger)
+		public CoinCommands(IOptions<DiscordBotPriceSettings> settings,CurrencyManager currencyManager, ILogger logger)
 		{
+			this._settings=settings.Value;
 			this._currencyManager = currencyManager;
 		    this._logger = logger;
 		}
@@ -47,7 +50,7 @@ namespace CoinBot.Discord.Commands
 							builder.WithUrl(details.Url);
 							if (currency.ImageUrl != null)
 								builder.WithThumbnailUrl(currency.ImageUrl);
-							builder.AddInlineField("Price", details.GetPrice());
+							builder.AddInlineField("Price", details.GetPrice(_settings));
 							builder.AddInlineField("Change", details.GetChange());
 							AddFooter(builder, details.LastUpdated);
 						}
@@ -182,7 +185,7 @@ namespace CoinBot.Discord.Commands
 				CoinMarketCapCoin details = coin.Getdetails<CoinMarketCapCoin>();
 				builder.Fields.Add(new EmbedFieldBuilder
 				{
-					Name = $"{coin.Name} ({coin.Symbol}) | {details.DayChange.AsPercentage()} | {details.GetPriceSummary()}",
+					Name = $"{coin.Name} ({coin.Symbol}) | {details.DayChange.AsPercentage()} | {details.GetPriceSummary(_settings)}",
 					Value = $"[{details.GetChangeSummary()}{Environment.NewLine}Cap {details.MarketCap.AsUsdPrice()} | Vol {details.Volume.AsUsdPrice()} | Rank {details.Rank}]({details.Url})"
 				});
 			}
